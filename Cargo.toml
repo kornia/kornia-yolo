@@ -1,0 +1,26 @@
+[package]
+name = "kornia-yolo"
+categories = ["computer-vision", "science::robotics"]
+description = "Serving library for computer vision and AI Robotics"
+edition = "2024"
+homepage = "http://kornia.org"
+include = ["Cargo.toml"]
+license = "Apache-2.0"
+repository = "https://github.com/kornia/kornia-yolo"
+rust-version = "1.85"
+version = "0.0.1"
+
+[dependencies]
+candle-core = { version = "0.8.4" }
+candle-nn = { version = "0.8.4" }
+hf-hub = "0.4.2"
+kornia-image = "0.1.8"
+kornia-imgproc = "0.1.8"
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "2.0"
+tracing = "0.1"
+
+[dev-dependencies]
+argh = "0.1"
+kornia-io = "0.1.8"
+rerun = "0.22"
