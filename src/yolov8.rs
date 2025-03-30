@@ -1,5 +1,5 @@
 use super::{
-    bounding_box::{BoundingBox, non_maximum_suppression},
+    bounding_box::{BoundingBox, non_maximum_suppression_fast},
     model::{Multiples, YoloV8 as YoloV8Model},
 };
 use candle_core::{DType, Device, IndexOp, Tensor};
@@ -173,7 +173,7 @@ impl YoloV8 {
     ) -> Result<Vec<BoundingBox>, YoloV8Error> {
         let (pred_size, npreds) = pred.dims2()?;
         let nclasses = pred_size - 4;
-        let mut bboxes: Vec<Vec<BoundingBox>> = (0..nclasses).map(|_| Vec::new()).collect();
+        let mut bboxes = vec![];
         for index in 0..npreds {
             let pred = Vec::<f32>::try_from(pred.i((.., index))?)?;
             let confidence = *pred[4..].iter().max_by(|x, y| x.total_cmp(y)).unwrap();
@@ -193,16 +193,15 @@ impl YoloV8 {
                         confidence,
                         class: class_index as u32,
                     };
-                    bboxes[class_index].push(bbox);
+                    bboxes.push(bbox);
                 }
             }
         }
 
         // non-maximum suppression
-        // TODO: implement faster version from Thomas M.
-        non_maximum_suppression(&mut bboxes, self.config.nms_threshold);
+        let bboxes = non_maximum_suppression_fast(&bboxes, self.config.nms_threshold);
 
-        Ok(bboxes.into_iter().flatten().collect())
+        Ok(bboxes)
     }
 
     fn load_model(size: &YoloV8Size, device: &Device) -> Result<YoloV8Model, YoloV8Error> {
