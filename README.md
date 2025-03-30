@@ -54,6 +54,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 cargo run --example inference --release -- --image_path ./tests/data/bike.jpg
 ```
 
+![Screenshot from 2025-03-30 16-54-58](https://github.com/user-attachments/assets/9245c998-1261-4620-9d50-4e1985c39b5e)
+
 ## Acknowledgements
 
 This project is built on top of the following amazing projects:
