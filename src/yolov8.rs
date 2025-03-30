@@ -55,15 +55,19 @@ impl TryFrom<String> for YoloV8Size {
     }
 }
 
-impl YoloV8Size {
-    fn to_string(&self) -> String {
-        match self {
-            YoloV8Size::N => "n".to_string(),
-            YoloV8Size::S => "s".to_string(),
-            YoloV8Size::M => "m".to_string(),
-            YoloV8Size::L => "l".to_string(),
-            YoloV8Size::X => "x".to_string(),
-        }
+impl std::fmt::Display for YoloV8Size {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                YoloV8Size::N => "n",
+                YoloV8Size::S => "s",
+                YoloV8Size::M => "m",
+                YoloV8Size::L => "l",
+                YoloV8Size::X => "x",
+            }
+        )
     }
 }
 
@@ -206,7 +210,7 @@ impl YoloV8 {
         // check if the model is already downloaded or download it
         let model_path = hf_hub::api::sync::Api::new()?
             .model("lmz/candle-yolo-v8".to_string())
-            .get(&format!("yolov8{}.safetensors", size.to_string()))?;
+            .get(&format!("yolov8{}.safetensors", size))?;
 
         let vb = unsafe { VarBuilder::from_mmaped_safetensors(&[model_path], DType::F32, device)? };
         let m = match size {
